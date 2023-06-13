@@ -1,8 +1,32 @@
 import { AcademicCapIcon } from "@heroicons/react/24/solid";
 import { img1 } from "../assets";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { FormEvent, useContext } from "react";
+import { motion } from "framer-motion";
+import { AuthContext } from "../contexts/AuthContext";
 
 const Login = () => {
+	const {
+		setLoading,
+		setUsername,
+		setPassword,
+		loading,
+		username,
+		password,
+		login,
+		key,
+	} = useContext(AuthContext);
+
+	const navigate = useNavigate();
+
+	const handleSubmit = (e: FormEvent) => {
+		e.preventDefault();
+		setLoading(true);
+
+		login().then((res) =>
+			res == "Welcome!" ? navigate("/dashboard") : console.log(res)
+		);
+	};
 	return (
 		<div className="flex flex-col h-full">
 			<nav className="w-full bg-green-800 sm:py-5 py-5 px-4">
@@ -13,9 +37,20 @@ const Login = () => {
 					</h1>
 				</div>
 			</nav>
-			<main className="w-full p-4 h-full flex flex-col  justify-around items-center text-zinc-700">
+			<main className="w-full p-4 h-full flex flex-col  justify-around items-center text-zinc-700 relative overflow-x-hidden">
+				{loading && (
+					<motion.div
+						initial={{ x: "-100%" }}
+						animate={{ x: "100%" }}
+						transition={{ repeat: 50, duration: 1 }}
+						className="absolute top-0 w-full h-1 bg-yellow-500"
+					></motion.div>
+				)}
 				<h2 className="text-xl font-medium">FUTO Students Result Portal</h2>
-				<form className="w-full sm:w-1/2 bg-white rounded-md shadow-xl px-10 py-5 flex flex-col gap-4">
+				<form
+					onSubmit={(e: FormEvent) => handleSubmit(e)}
+					className="w-full sm:w-1/2 bg-white rounded-md shadow-xl px-10 py-5 flex flex-col gap-4"
+				>
 					<div className="p-5 bg-green-800 rounded-full mx-auto w-max h-max ">
 						<AcademicCapIcon className="h-10 text-white" />
 					</div>
@@ -24,11 +59,15 @@ const Login = () => {
 						type="text"
 						placeholder="Username"
 						className="bg-zinc-100 w-full p-4 rounded"
+						value={username}
+						onChange={(e) => setUsername(e.target.value)}
 					/>
 					<input
 						type="text"
 						placeholder="Password"
 						className="bg-zinc-100 w-full p-4 rounded"
+						value={password}
+						onChange={(e) => setPassword(e.target.value)}
 					/>
 					<button
 						type="submit"
@@ -47,7 +86,9 @@ const Login = () => {
 							</Link>
 						</p>
 					</div>
-                    <p className="mx-auto text-sm text-zinc-500">Powered by Ulpha Deep Labs</p>
+					<p className="mx-auto text-sm text-zinc-500">
+						Powered by Ulpha Deep Labs
+					</p>
 				</form>
 			</main>
 		</div>
