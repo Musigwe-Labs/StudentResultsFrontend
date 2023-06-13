@@ -14,7 +14,6 @@ const Login = () => {
 		username,
 		password,
 		login,
-		key,
 	} = useContext(AuthContext);
 
 	const navigate = useNavigate();
