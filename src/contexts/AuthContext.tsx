@@ -41,12 +41,16 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
 			.then(async (res) => {
 				setLoading(false);
 				const data = await res.json();
-				setKey(data.key);
-				return "Welcome!";
+				if (res.ok) {
+					setKey(data.key);
+					return "Welcome!";
+				} else {
+					return data;
+				}
 			})
 			.catch((error) => {
 				setLoading(false);
-				return(error);
+				return error;
 			});
 	return (
 		<AuthContext.Provider
